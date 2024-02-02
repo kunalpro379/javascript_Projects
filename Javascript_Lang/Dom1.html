@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DOM_LEARNING (document object model)</title>
+</head>
+<body style="background-color: #212121;color: #ffff;">
+    
+        <div class ="day">monday</div>
+        <div class ="day">tuesday</div>
+        <div class ="day">wednesday</div>
+        <div class ="day">thursday</div>
+        <div class ="day">friday</div>
+        <div class ="day">saturday</div>
+
+    </div>
+</body>
+<script>
+    //const parent = document.querySelectorAll('.day');
+// console.log(parent);
+// console.log(parent.children);
+// console.log(parent.children[1].innerHTML)
+    // Select the parent element with the class "day"
+
+    // Loop through each child element and log its innerHTML
+    // for (let i = 0; i < parent.length; i++) {
+    //     console.log(parent[i].innerHTML);
+    // }
+//     day.children[1].style.color="orange"
+
+// console.log(day.firstElementChild);
+// console.log(day.lastElementChild);
+const parent = document.querySelectorAll('.day');
+
+    // Loop through each day element
+    parent.forEach(day => {
+        // Access the children of each day element
+        const children = day.children;
+        // Check if there are children
+        if (children.length > 1) {
+            // Style the second child element (index 1)
+            children[1].style.color = "orange";
+        }
+
+        // Log the first and last elements of each day element
+        console.log(day.firstElementChild);
+        console.log(day.lastElementChild);
+    });
+    // const dayone=document.querySelector('.day')
+    // console.log(dayone)
+    // console.log(dayone.parentElement);
+    // console.log(parent.nextElementSibling)
+    // console.log("NODES: ",parent.childNodes)
+        // Select the first element with the class "day"
+        const dayOne = document.querySelector('.day');
+    console.log(dayOne);
+
+    // Access the parent element of dayOne
+    console.log(dayOne.parentElement);
+
+    // Access the next sibling element of parent (if it exists)
+    console.log(dayOne.nextElementSibling);
+
+    // Iterate over parent NodeList and log child nodes
+    parent.forEach(day => {
+        console.log("NODES:",  day.childNodes);
+    });
+    
+</script>
+
+</script>
+
+</script>
+</html>

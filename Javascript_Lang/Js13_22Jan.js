@@ -1,0 +1,1 @@
+//***************** DOM Manipulation in javascript *****/

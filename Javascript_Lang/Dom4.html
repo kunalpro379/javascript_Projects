@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body style="background-color: #212121; color: #fff;">
+    <ul class="languages">
+        <li>Javascript</li>
+    </ul>
+    <script>
+        function addLang1(langName) {
+            const li = document.createElement('li');
+            li.innerHTML=`${LangName}`
+            document.querySelector('.Language').appendChild(li); // appendChild() method to add the new list item to the unordered list
+        }
+        function addLang2(langName) {
+            const li = document.createElement('li');
+            const p=document.createTextNode(langName)
+            //li.appendChild(document.createTextNode(langName));
+            li.appendChild(p);
+            document.querySelector('.languages').appendChild(li); // Change '.Language' to '.languages'
+        }
+        // addLang1("Python");
+        // addLang1("C++");
+        addLang2("Python");
+        addLang2("C++");
+
+ // Edit list items
+ const secondLang = document.querySelector("li:nth-child(2)");
+        const newli = document.createElement('li'); // Create a new list item
+        newli.textContent = 'C#'; // Set its text content
+        secondLang.replaceWith(newli);
+
+        const firstLang = document.querySelector("li:nth-child(1)");
+        firstLang.innerHTML = "TypeScript"; // Use innerHTML to change content
+        //remove
+        const LastLang=document.querySelector("li:last-child")
+        LastLang.remove()
+    </script>
+</body>
+</html>
