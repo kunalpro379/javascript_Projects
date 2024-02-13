@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <script>const Xhr=new XMLHttpRequest();
+    const requestUrl='https://randomuser.me/api/';
+    Xhr.open('GET',requestUrl);
+    Xhr.send();
+    //console.log(Xhr.readyState)
+    Xhr.onreadystatechange=function(){
+        console.log('Ready State:',Xhr.readyState)
+    }
+    console.log('Here')
+    </script>
+</body>
+</html>

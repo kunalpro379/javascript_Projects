@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body><h1>Chai</h1>
+    <button id ="send">Start</button>
+    <button id ="stop">Stop</button>
+
+</body>
+    <script>
+
+// setInterval(function(){
+//     console.log('Async',Date.now())
+// },2)
+const SayDat=function(){
+    console.log('Async',Date.now())
+}
+
+const IntervalId=setInterval(SayDat,0.0001)
+clearInterval(IntervalId)
+
+    </script>
+
+</html>
