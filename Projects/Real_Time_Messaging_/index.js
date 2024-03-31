@@ -7,24 +7,34 @@ const app = express();
 const server = http.createServer(app);
 const io = new Server(server);
 
+// Array to store chat history
+let messageHistory = [];
+
 app.use(express.static(path.resolve(__dirname, './public')));
 
 // Socket.io connection handling
-io.on("connection", (client) => {
-    console.log("A new user has connected:", client.id);
+io.on("connection", (socket) => {
+    console.log("A new user has connected:", socket.id);
     console.log("\n");
-    client.on("user_message", (message)=>{
-        console.log("a new user message arrived : ",message);
-        io.emit("message", message);
+
+    // Send chat history to the newly connected client
+    socket.emit("message_history", messageHistory);
+
+    socket.on("user_message", (message) => {
+        console.log("A new user message arrived:", message);
+        // Add the new message to the chat history
+        const userMessage = { userId: socket.id, message: message };
+        messageHistory.push(userMessage);
+        // Broadcast the message to all clients
+        io.emit("message", userMessage);
     });
-
-
 });
 
 app.get("/", (req, res) => {
     return res.sendFile(path.resolve(__dirname, './public/index.html'));
 });
-const PORT=process.env.PORT || 3000;
+
+const PORT = process.env.PORT || 3000;
 server.listen(PORT, () => {
-    console.log('Server is running on port 3000');
+    console.log(`Server is running on port ${PORT}`);
 });

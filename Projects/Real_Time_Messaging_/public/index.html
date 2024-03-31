@@ -7,27 +7,56 @@
 </head>
 <body>
     <h1>CHATTING</h1>
+    <p id="userCount"></p>
     <input type="text" id="messageInput" placeholder="Enter Message"/>
     <button id="sendBtn">Send</button>
     <div id="messages"></div>
     <script src="/socket.io/socket.io.js"></script>
     <script>
         const allMessages = document.getElementById("messages");
+        const userCount = document.getElementById("userCount");
         const socket = io();
         const sendBtn = document.getElementById("sendBtn");
         const messageInput = document.getElementById("messageInput");
 
-        // Listen for "message" event from the server
-        socket.on("message", (message) => {
+        // Function to save chat history to local storage
+        function saveChatHistory(history) {
+            localStorage.setItem('chatHistory', JSON.stringify(history));
+        }
+
+        // Function to load chat history from local storage
+        function loadChatHistory() {
+            const savedHistory = localStorage.getItem('chatHistory');
+            return savedHistory ? JSON.parse(savedHistory) : [];
+        }
+
+        // Display chat history from local storage on page load
+        const savedHistory = loadChatHistory();
+        savedHistory.forEach((data) => {
             const p = document.createElement("p");
-            p.innerText = message;
+            p.innerText = `${data.userId}: ${data.message}`;
             allMessages.appendChild(p);
+        });
+
+        // Listen for "message" event from the server
+        socket.on("message", (data) => {
+            const p = document.createElement("p");
+            p.innerText = `${data.userId}: ${data.message}`;
+            allMessages.appendChild(p);
+            // Save chat history to local storage
+            saveChatHistory([...savedHistory, data]);
+        });
+
+        // Listen for "user_count" event from the server
+        socket.on("user_count", (count) => {
+            userCount.innerText = `Users joined: ${count}`;
         });
 
         sendBtn.addEventListener("click", (e) => {
             const message = messageInput.value;
             console.log("Sending message:", message);
             socket.emit("user_message", message);
+            messageInput.value = ""; // Clear input field after sending message
         });
     </script>
 </body>
