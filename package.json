@@ -1,11 +1,15 @@
 {
   "name": "back_end",
   "version": "1.0.0",
-  "description": "",
+  "description": "a backend with me",
   "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "",
-  "license": "ISC"
+  "author": "kunal patil",
+  "license": "ISC",
+  "dependencies": {
+    "mongoose": "^8.2.0"
+  },
+  "devDependencies": {}
 }
