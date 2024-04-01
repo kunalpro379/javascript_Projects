@@ -7,7 +7,7 @@ const app = express();
 const server = http.createServer(app);
 const io = new Server(server);
 
-// Array to store chat history
+
 let messageHistory = [];
 
 app.use(express.static(path.resolve(__dirname, './public')));
@@ -17,7 +17,7 @@ io.on("connection", (socket) => {
     console.log("A new user has connected:", socket.id);
     console.log("\n");
 
-    // Send chat history to the newly connected client
+    // Send chat history
     socket.emit("message_history", messageHistory);
 
     socket.on("user_message", (message) => {
