@@ -22,10 +22,10 @@ io.on("connection", (socket) => {
 
     socket.on("user_message", (message) => {
         console.log("A new user message arrived:", message);
-        // Add the new message to the chat history
+        
         const userMessage = { userId: socket.id, message: message };
         messageHistory.push(userMessage);
-        // Broadcast the message to all clients
+       
         io.emit("message", userMessage);
     });
 });
