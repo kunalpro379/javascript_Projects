@@ -19,18 +19,18 @@
         const sendBtn = document.getElementById("sendBtn");
         const messageInput = document.getElementById("messageInput");
 
-        // Function to save chat history to local storage
+        
         function saveChatHistory(history) {
             localStorage.setItem('chatHistory', JSON.stringify(history));
         }
 
-        // Function to load chat history from local storage
+     
         function loadChatHistory() {
             const savedHistory = localStorage.getItem('chatHistory');
             return savedHistory ? JSON.parse(savedHistory) : [];
         }
 
-        // Display chat history from local storage on page load
+       
         const savedHistory = loadChatHistory();
         savedHistory.forEach((data) => {
             const p = document.createElement("p");
@@ -38,16 +38,16 @@
             allMessages.appendChild(p);
         });
 
-        // Listen for "message" event from the server
+      
         socket.on("message", (data) => {
             const p = document.createElement("p");
             p.innerText = `${data.userId}: ${data.message}`;
             allMessages.appendChild(p);
-            // Save chat history to local storage
+          
             saveChatHistory([...savedHistory, data]);
         });
 
-        // Listen for "user_count" event from the server
+    
         socket.on("user_count", (count) => {
             userCount.innerText = `Users joined: ${count}`;
         });
