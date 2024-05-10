@@ -3,14 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Real-Time Chat</title>
 </head>
 <body>
-    <h1>CHATTING</h1>
+    <h1>Real-Time Chat</h1>
     <p id="userCount"></p>
-    <input type="text" id="messageInput" placeholder="Enter Message"/>
-    <button id="sendBtn">Send</button>
     <div id="messages"></div>
+    <input type="text" id="messageInput" placeholder="Enter Message">
+    <button id="sendBtn">Send</button>
+
     <script src="/socket.io/socket.io.js"></script>
     <script>
         const allMessages = document.getElementById("messages");
@@ -52,11 +53,20 @@
             userCount.innerText = `Users joined: ${count}`;
         });
 
-        sendBtn.addEventListener("click", (e) => {
-            const message = messageInput.value;
-            console.log("Sending message:", message);
-            socket.emit("user_message", message);
-            messageInput.value = ""; // Clear input field after sending message
+        // Send message when send button is clicked
+        sendBtn.addEventListener("click", () => {
+            const message = messageInput.value.trim();
+            if (message !== "") {
+                socket.emit("user_message", message);
+                messageInput.value = ""; // Clear input field after sending message
+            }
+        });
+
+        // Send message when Enter key is pressed in the input field
+        messageInput.addEventListener("keypress", (e) => {
+            if (e.key === "Enter") {
+                sendBtn.click();
+            }
         });
     </script>
 </body>
