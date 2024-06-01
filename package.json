@@ -9,7 +9,7 @@
   "author": "kunal patil",
   "license": "ISC",
   "dependencies": {
-    "mongoose": "^8.2.0"
-  },
-  "devDependencies": {}
+    "mongoose": "^8.2.0",
+    "p5": "^1.9.3"
+  }
 }

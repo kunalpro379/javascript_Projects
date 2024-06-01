@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Location Tracking App</title>
+    <style>
+        #map {
+            height: 400px;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <h1>Location Tracking App</h1>
+    <div id="map"></div>
+    <form id="locationForm" action="/location" method="POST">
+        <input type="hidden" id="latInput" name="lat" value="">
+        <input type="hidden" id="lngInput" name="lng" value="">
+        <button type="submit">Save Location</button>
+    </form>
+    <script>
+        var latitude = 40.7128; // Example latitude value
+        var longitude = -74.0060; // Example longitude value
+
+        function initMap() {
+            var location = {lat: latitude, lng: longitude};
+            var map = new google.maps.Map(document.getElementById('map'), {
+                zoom: 8,
+                center: location
+            });
+            var marker = new google.maps.Marker({
+                position: location,
+                map: map
+            });
+
+            // Update hidden inputs with marker position
+            map.addListener('click', function(e) {
+                document.getElementById('latInput').value = e.latLng.lat();
+                document.getElementById('lngInput').value = e.latLng.lng();
+            });
+        }
+    </script>
+    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCg4XLem2-RIRk7Iup5ufO9eeb-xctzeXc&callback=initMap"></script>
+</body>
+</html>
