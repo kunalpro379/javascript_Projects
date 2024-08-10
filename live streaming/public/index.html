@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Group Video Call</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <h1>Group Video Call</h1>
+    <div id="my-container">
+        <video id="local-video" autoplay muted></video>
+        <button id="toggle-video">Toggle Video</button>
+        <button id="toggle-audio">Toggle Audio</button>
+    </div>
+    <div id="users"></div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        const socket = io();
+
+        const localVideo = document.getElementById('local-video');
+        const usersDiv = document.getElementById('users');
+        const toggleVideoBtn = document.getElementById('toggle-video');
+        const toggleAudioBtn = document.getElementById('toggle-audio');
+
+        const peers = new Map();
+        let localStream;
+        let isVideoEnabled = true;
+        let isAudioEnabled = true;
+
+        async function initMedia() {
+            localStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+            localVideo.srcObject = localStream;
+        }
+
+        function createUserBox(id, video, audio) {
+            let userBox = document.getElementById(id);
+            if (!userBox) {
+                userBox = document.createElement('div');
+                userBox.id = id;
+                userBox.className = 'user-box';
+                const videoElement = document.createElement('video');
+                videoElement.id = `${id}-video`;
+                videoElement.autoplay = true;
+                userBox.appendChild(videoElement);
+                usersDiv.appendChild(userBox);
+            }
+            userBox.querySelector('video').style.display = video ? 'block' : 'none';
+        }
+
+        function handleNewUser(id, video, audio) {
+            createUserBox(id, video, audio);
+
+            const peer = new RTCPeerConnection({
+                iceServers: [{ urls: 'stun:stun.stunprotocol.org' }]
+            });
+
+            peers.set(id, peer);
+
+            peer.onicecandidate = ({ candidate }) => {
+                if (candidate) {
+                    socket.emit('ice-candidate', { to: id, candidate });
+                }
+            };
+
+            peer.ontrack = ({ streams: [stream] }) => {
+                document.getElementById(`${id}-video`).srcObject = stream;
+            };
+
+            localStream.getTracks().forEach(track => {
+                peer.addTrack(track, localStream);
+            });
+
+            socket.emit('offer', { to: id, offer:  peer.createOffer() });
+        }
+
+        function handleOffer(from, offer) {
+            const peer = new RTCPeerConnection({
+                iceServers: [{ urls: 'stun:stun.stunprotocol.org' }]
+            });
+
+            peers.set(from, peer);
+
+            peer.onicecandidate = ({ candidate }) => {
+                if (candidate) {
+                    socket.emit('ice-candidate', { to: from, candidate });
+                }
+            };
+
+            peer.ontrack = ({ streams: [stream] }) => {
+                document.getElementById(`${from}-video`).srcObject = stream;
+            };
+
+            peer.setRemoteDescription(new RTCSessionDescription(offer));
+
+            localStream.getTracks().forEach(track => {
+                peer.addTrack(track, localStream);
+            });
+
+            peer.createAnswer().then(answer => {
+                peer.setLocalDescription(answer);
+                socket.emit('answer', { to: from, answer });
+            });
+        }
+
+        function handleAnswer(from, answer) {
+            const peer = peers.get(from);
+            if (peer) {
+                peer.setRemoteDescription(new RTCSessionDescription(answer));
+            }
+        }
+
+        function handleIceCandidate(from, candidate) {
+            const peer = peers.get(from);
+            if (peer) {
+                peer.addIceCandidate(new RTCIceCandidate(candidate));
+            }
+        }
+
+        function updateMedia(id, video, audio) {
+            const userBox = document.getElementById(id);
+            if (userBox) {
+                const videoElement = userBox.querySelector('video');
+                videoElement.style.display = video ? 'block' : 'none';
+            }
+        }
+
+        toggleVideoBtn.onclick = () => {
+            isVideoEnabled = !isVideoEnabled;
+            localStream.getVideoTracks()[0].enabled = isVideoEnabled;
+            socket.emit('toggle:media', { type: 'video', status: isVideoEnabled });
+        };
+
+        toggleAudioBtn.onclick = () => {
+            isAudioEnabled = !isAudioEnabled;
+            localStream.getAudioTracks()[0].enabled = isAudioEnabled;
+            socket.emit('toggle:media', { type: 'audio', status: isAudioEnabled });
+        };
+
+        socket.on('user:joined', ({ id, video, audio }) => {
+            handleNewUser(id, video, audio);
+        });
+
+        socket.on('user:mediaChanged', ({ id, type, status }) => {
+            if (type === 'video') {
+                updateMedia(id, status, true);
+            }
+        });
+
+        socket.on('user:disconnect', ({ id }) => {
+            document.getElementById(id).remove();
+            peers.get(id)?.close();
+            peers.delete(id);
+        });
+
+        socket.on('offer', ({ from, offer }) => handleOffer(from, offer));
+        socket.on('answer', ({ from, answer }) => handleAnswer(from, answer));
+        socket.on('ice-candidate', ({ from, candidate }) => handleIceCandidate(from, candidate));
+
+        window.onload = initMedia;
+    </script>
+</body>
+</html>

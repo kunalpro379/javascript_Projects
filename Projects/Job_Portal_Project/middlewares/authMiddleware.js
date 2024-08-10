@@ -16,3 +16,12 @@ const userAuth = async (req, res, next) => {
 };
 
 export default userAuth;
+
+/*
+import JWT from "jsonwebtoken";
+
+const authUser=async (res,req,next) =>{
+  
+}
+export default userAuth;
+*/

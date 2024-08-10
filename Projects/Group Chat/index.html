@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Camera Feed</title>
+    <style>
+        #videoElement {
+            width: 100%;
+            height: auto;
+        }
+    </style>
+</head>
+<body>
+    <h1>Camera Feed</h1>
+    <video id="videoElement" autoplay playsinline></video>
+    <script>
+        const videoElement = document.getElementById('videoElement');
+        const socket = io('http://localhost:3001');
+
+        let peerConnection;
+        const configuration = {
+            iceServers: [{ urls: 'stun:stun.l.google.com:19302' }]
+        };
+
+        socket.on('offer', async (offer) => {
+            peerConnection = new RTCPeerConnection(configuration);
+            peerConnection.ontrack = (event) => {
+                videoElement.srcObject = event.streams[0];
+            };
+
+            await peerConnection.setRemoteDescription(new RTCSessionDescription(offer));
+            const answer = await peerConnection.createAnswer();
+            await peerConnection.setLocalDescription(answer);
+            socket.emit('answer', answer);
+        });
+
+        socket.on('ice-candidate', (candidate) => {
+            peerConnection.addIceCandidate(new RTCIceCandidate(candidate));
+        });
+
+        peerConnection.onicecandidate = (event) => {
+            if (event.candidate) {
+                socket.emit('ice-candidate', event.candidate);
+            }
+        };
+    </script>
+    <script src="/socket.io/socket.io.js"></script>
+</body>
+</html>

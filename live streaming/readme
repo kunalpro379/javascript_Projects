@@ -1,0 +1,3 @@
+RTCPeerConnection – creates and navigates peer-to-peer connections.
+RTCSessionDescription – describes one end of a connection (or a potential connection) and how it’s configured.
+

@@ -1,0 +1,43 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 20px;
+}
+
+#local-video {
+    width: 300px;
+    height: 200px;
+    background: #000;
+    margin-bottom: 10px;
+}
+
+button {
+    margin: 5px;
+    padding: 10px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #0056b3;
+}
+
+#users {
+    margin-top: 20px;
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.user-box {
+    border: 1px solid #ccc;
+    padding: 10px;
+    margin: 10px;
+    width: 320px;
+}
+
+.user-box video {
+    width: 100%;
+    height: auto;
+    background: #000;
+}

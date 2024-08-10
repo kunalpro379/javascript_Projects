@@ -1,0 +1,176 @@
+<!-- <!DOCTYPE html>
+<html>
+<head>
+    <title>Live Group Chat</title>
+    <style>
+        #messages { border: 1px solid #ccc; height: 300px; overflow-y: scroll; }
+        #message { width: 100%; }
+    </style>
+</head>
+<body>
+    <h1>Live Group Chat</h1>
+
+    <div id="groupForm">
+        <h2>Create or Join Group</h2>
+        <input id="groupName" placeholder="Group Name" />
+        <input id="groupPassword" placeholder="Password" type="password" />
+        <button onclick="createOrJoinGroup()">Submit</button>
+    </div>
+
+    <div id="chat" style="display:none;">
+        <h2>Chat Room: <span id="roomName"></span></h2>
+        <div id="messages"></div>
+        <input id="message" placeholder="Type a message" />
+        <button onclick="sendMessage()">Send</button>
+    </div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        const socket = io();
+
+        function createOrJoinGroup() {
+            const name = document.getElementById('groupName').value;
+            const password = document.getElementById('groupPassword').value;
+            console.log(`Creating or joining group: ${name} with password ${password}`);
+            socket.emit('createOrJoinGroup', { name, password });
+        }
+
+        function sendMessage() {
+            const message = document.getElementById('message').value;
+            const room = document.getElementById('roomName').innerText;
+            console.log(`Sending message to room ${room}: ${message}`);
+            socket.emit('sendMessage', { room, message });
+            document.getElementById('message').value = '';
+        }
+
+        socket.on('groupCreated', (data) => {
+            console.log(`Group created: ${data.name} with ID ${data.id}`);
+            alert('Group created: ' + data.name);
+            redirectToGroupRoom(data.id); // Redirect to the group room URL
+        });
+
+        socket.on('groupJoined', (data) => {
+            console.log(`Joined room with ID ${data.id}`);
+            document.getElementById('chat').style.display = 'block';
+            document.getElementById('roomName').innerText = data.id;
+        });
+
+        socket.on('message', (message) => {
+            console.log(`Message received: ${message}`);
+            const messages = document.getElementById('messages');
+            const messageElement = document.createElement('div');
+            messageElement.innerText = message;
+            messages.appendChild(messageElement);
+            messages.scrollTop = messages.scrollHeight;
+        });
+
+        socket.on('error', (message) => {
+            console.error(`Error: ${message}`);
+            alert(message);
+        });
+
+        function redirectToGroupRoom(id) {
+            window.location.href = `/chat?id=${id}`;
+        }
+
+        // On page load, check if there's a room ID in the query parameters
+        function getQueryParam(param) {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get(param);
+        }
+
+        window.onload = () => {
+            const roomId = getQueryParam('id');
+            if (roomId) {
+                console.log('Joining room with ID:', roomId);
+                socket.emit('joinGroup', { id: roomId, password: '' });
+            }
+        };
+    </script>
+</body>
+</html> -->
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Chat App</title>
+  <script src="/socket.io/socket.io.js"></script>
+  <style>
+    #messages {
+      border: 1px solid #ccc;
+      height: 200px;
+      overflow-y: scroll;
+      padding: 10px;
+    }
+    #messageInput {
+      width: 100%;
+    }
+  </style>
+</head>
+<body>
+  <h1>Chat Application</h1>
+  <input id="userId" placeholder="Enter user ID" />
+  <input id="groupId" placeholder="Enter group ID" />
+  <button onclick="joinGroup()">Join Group</button>
+  <div id="messages"></div>
+  <input id="messageInput" placeholder="Enter message" />
+  <button onclick="sendMessage()">Send</button>
+
+  <script>
+    const socket = io('http://localhost:3000');
+
+    function joinGroup() {
+      const userId = document.getElementById('userId').value;
+      const groupId = document.getElementById('groupId').value;
+      if (userId && groupId) {
+        // Emit joinGroup event to WebSocket server
+        socket.emit('joinGroup', { userId, groupId });
+
+        // Call API to join group
+        fetch('/api/joinGroup', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ userId, groupId })
+        })
+        .then(response => response.json())
+        .then(data => console.log(data))
+        .catch(error => console.error('Error:', error));
+      } else {
+        alert('Please enter both user ID and group ID');
+      }
+    }
+
+    function sendMessage() {
+      const message = document.getElementById('messageInput').value;
+      const groupId = document.getElementById('groupId').value;
+      const userId = document.getElementById('userId').value;
+      if (message && groupId && userId) {
+        // Emit message event to WebSocket server
+        socket.emit('message', { userId, groupId, message });
+
+        // Call API to send message
+        fetch('/api/sendMessage', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ userId, groupId, message })
+        })
+        .then(response => response.json())
+        .then(data => console.log(data))
+        .catch(error => console.error('Error:', error));
+        document.getElementById('messageInput').value = '';
+      } else {
+        alert('Please enter a message, user ID, and group ID');
+      }
+    }
+
+    socket.on('message', (data) => {
+      const messagesDiv = document.getElementById('messages');
+      messagesDiv.innerHTML += `<div><strong>${data.userId}:</strong> ${data.message}</div>`;
+      messagesDiv.scrollTop = messagesDiv.scrollHeight; // Scroll to bottom
+    });
+  </script>
+</body>
+</html>

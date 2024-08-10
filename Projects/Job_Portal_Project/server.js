@@ -21,7 +21,7 @@ import connectDB from "./config/db.js";
 // Routes import
 import testRoutes from "./routes/test_routes.js";
 import authRoutes from "./routes/auth_routes.js";
-///import errroMiddelware from "./middlewares/errroMiddleware.js"; // Corrected spelling
+import errroMiddelware from "./middlewares/custom_error_middleware.js"; 
 // import jobsRoutes from "./routes/jobsRoute.js";
 // import userRoutes from "./routes/userRoutes.js";
 
@@ -64,6 +64,8 @@ app.use(morgan("dev"));
 // Routes
 app.use("/api/v1/test", testRoutes);
 app.use("/api/v1/auth", authRoutes);
+//validation middleware
+app.use(errroMiddelware);
 // app.use("/api/v1/user", userRoutes);
 // app.use("/api/v1/job", jobsRoutes);
 
