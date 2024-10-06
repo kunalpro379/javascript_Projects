@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Collaborative Text Editor</title>
+</head>
+<body>
+  <h1>Collaborative Text Editor</h1>
+  <textarea id="editor" rows="20" cols="80"></textarea>
+  <script>
+    const editor = document.getElementById('editor');
+
+    // WebSocket connection for real-time updates
+    const ws = new WebSocket('ws://localhost:8080');
+
+    ws.onmessage = function(event) {
+      const data = JSON.parse(event.data);
+      editor.value = data.content; // Update editor with new content
+    };
+
+    // Update document content
+    editor.addEventListener('input', function() {
+      fetch('/document/123', { // Use document ID
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ content: editor.value })
+      });
+    });
+  </script>
+</body>
+</html>

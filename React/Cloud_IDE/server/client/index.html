@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Collaborative Editor</title>
+    <style>
+        #editor { height: 80vh; width: 100%; }
+    </style>
+</head>
+<body>
+    <textarea id="editor"></textarea>
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        const socket = io();
+        const editor = document.getElementById('editor');
+        const documentId = 'example-document-id'; // Replace with dynamic document ID
+
+        socket.emit('join', documentId);
+
+        editor.addEventListener('input', () => {
+            const content = editor.value;
+            socket.emit('edit', { documentId, content });
+        });
+
+        socket.on('update', (data) => {
+            if (data.documentId === documentId) {
+                editor.value = data.content;
+            }
+        });
+    </script>
+</body>
+</html>

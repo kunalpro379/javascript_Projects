@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Camera Stream</title>
+</head>
+<body>
+    <h1>Camera Stream</h1>
+    <video id="video" autoplay muted></video>
+    <button id="startStream">Start Streaming</button>
+    <script>
+        const videoElement = document.getElementById('video');
+        const startStreamButton = document.getElementById('startStream');
+
+        // Request camera access and stream it to the video element
+        async function startCamera() {
+            const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+            videoElement.srcObject = stream;
+            return stream;
+        }
+
+        // Handle starting the stream
+        startStreamButton.addEventListener('click', async () => {
+            const stream = await startCamera();
+            const mediaRecorder = new MediaRecorder(stream, {
+                mimeType: 'video/webm; codecs=vp8',
+            });
+
+            mediaRecorder.addEventListener('dataavailable', (event) => {
+                if (event.data.size > 0) {
+                    // Send the video data to the server
+                    fetch('/upload', {
+                        method: 'POST',
+                        body: event.data,
+                        headers: {
+                            'Content-Type': 'video/webm'
+                        }
+                    });
+                }
+            });
+
+            mediaRecorder.start(1000); // Send data every second
+        });
+    </script>
+</body>
+</html>

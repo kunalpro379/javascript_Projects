@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Camera Stream</title>
+</head>
+<body>
+  <video id="video" width="640" height="480" autoplay></video>
+  <button id="startStream">Start Streaming</button>
+  <script>
+    const video = document.getElementById('video');
+    const startStreamButton = document.getElementById('startStream');
+    let mediaStream;
+
+    // Request access to the user's camera
+    async function startCamera() {
+      try {
+        mediaStream = await navigator.mediaDevices.getUserMedia({ video: true });
+        video.srcObject = mediaStream;
+      } catch (error) {
+        console.error('Error accessing camera:', error);
+      }
+    }
+
+    startStreamButton.addEventListener('click', () => {
+      if (mediaStream) {
+        // Start streaming to server
+        const mediaRecorder = new MediaRecorder(mediaStream, { mimeType: 'video/webm' });
+        const socket = new WebSocket('ws://localhost:8000'); // Update to your server address
+
+        mediaRecorder.ondataavailable = (event) => {
+          if (event.data.size > 0) {
+            socket.send(event.data);
+          }
+        };
+
+        mediaRecorder.start(1000); // Send data every second
+      } else {
+        console.log('No camera stream available.');
+      }
+    });
+
+    // Start the camera when the page loads
+    startCamera();
+  </script>
+</body>
+</html>

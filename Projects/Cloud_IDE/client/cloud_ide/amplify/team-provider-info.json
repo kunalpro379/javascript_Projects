@@ -1,0 +1,33 @@
+{
+  "dev": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-cloudide-dev-1ac01-authRole",
+      "UnauthRoleArn": "arn:aws:iam::590183951930:role/amplify-cloudide-dev-1ac01-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::590183951930:role/amplify-cloudide-dev-1ac01-authRole",
+      "Region": "ap-south-1",
+      "DeploymentBucketName": "amplify-cloudide-dev-1ac01-deployment",
+      "UnauthRoleName": "amplify-cloudide-dev-1ac01-unauthRole",
+      "StackName": "amplify-cloudide-dev-1ac01",
+      "StackId": "arn:aws:cloudformation:ap-south-1:590183951930:stack/amplify-cloudide-dev-1ac01/4aa7f780-6e22-11ef-927c-0ad55e09860b",
+      "AmplifyAppId": "dirtxuiw17z5l"
+    }
+  },
+  "kunal": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-cloudide-kunal-7c9a6-authRole",
+      "UnauthRoleArn": "arn:aws:iam::590183951930:role/amplify-cloudide-kunal-7c9a6-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::590183951930:role/amplify-cloudide-kunal-7c9a6-authRole",
+      "Region": "ap-south-1",
+      "DeploymentBucketName": "amplify-cloudide-kunal-7c9a6-deployment",
+      "UnauthRoleName": "amplify-cloudide-kunal-7c9a6-unauthRole",
+      "StackName": "amplify-cloudide-kunal-7c9a6",
+      "StackId": "arn:aws:cloudformation:ap-south-1:590183951930:stack/amplify-cloudide-kunal-7c9a6/44bea430-6e23-11ef-86dd-02b7932337d7",
+      "AmplifyAppId": "dirtxuiw17z5l"
+    },
+    "categories": {
+      "api": {
+        "cloudide": {}
+      }
+    }
+  }
+}

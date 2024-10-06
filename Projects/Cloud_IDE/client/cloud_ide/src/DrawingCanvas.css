@@ -1,0 +1,11 @@
+/* DrawingCanvas.css */
+.drawing-canvas-container {
+    border: 1px solid #ccc;
+    margin: 10px;
+  }
+  
+  canvas {
+    border: 1px solid #000;
+    display: block;
+  }
+  

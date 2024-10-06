@@ -1,0 +1,67 @@
+.canvas-container {
+  border-radius: 8px;
+  flex-grow: 1; 
+  padding: 10px;
+  background-color: #3f3f3f;
+  position: relative;
+  box-shadow: 0 0 6px rgba(0, 0, 0, 0.1);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.canvas-container canvas {
+
+  display: block;
+}
+
+.canvas-container canvas.moving {
+
+  cursor: grab;
+}
+
+.canvas-container canvas.moving:active {
+  cursor: grabbing;
+}
+
+.canvas-container .menu {
+  user-select: none;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  padding: 10px;
+  left: 10px;
+  top: 10px;
+  border-radius: 5px;
+  background-color: rgba(231, 231, 231, 0.9);
+  position: absolute;
+}
+
+.canvas-container .menu.right {
+  left: unset;
+  right: 10px;
+}
+
+.canvas-container .menu hr {
+  border-top: 1px solid rgb(165, 165, 165);
+  margin: 5px;
+}
+
+.canvas-container .menu .button {
+  background: none;
+  padding: 10px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.canvas-container .menu .button:hover {
+  background: rgba(0, 0, 0, 0.1);
+}
+
+.hidden {
+  position: absolute;
+  width: 0;
+  height: 0;
+  visibility: hidden;
+  pointer-events: none;
+} 

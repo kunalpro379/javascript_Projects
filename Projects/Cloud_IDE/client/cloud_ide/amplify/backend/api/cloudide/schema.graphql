@@ -1,0 +1,63 @@
+# This "input" configures a global authorization rule to enable public access to
+# all models in this schema. Learn more about authorization rules here: https://docs.amplify.aws/cli/graphql/authorization-rules
+input AMPLIFY {
+  globalAuthRule: AuthRule = { allow: public }
+} # FOR TESTING ONLY!
+type CodeChange {
+  file: String!
+  content: String!
+}
+
+type CodeFile {
+  fileId: ID!
+  version: Int!
+  userId: String!
+  content: String!
+}
+
+# Define the types for drawing updates and code changes
+type Drawing {
+  drawingId: ID!
+  timestamp: Int!
+  userId: String!
+  x: Float!
+  y: Float!
+  isDrawing: Boolean!
+}
+
+type Mutation {
+  createDrawing(
+    drawingId: ID!
+    timestamp: Int!
+    userId: String!
+    x: Float!
+    y: Float!
+    isDrawing: Boolean!
+  ): Drawing
+  updateDrawing(
+    drawingId: ID!
+    timestamp: Int!
+    userId: String!
+    x: Float!
+    y: Float!
+    isDrawing: Boolean!
+  ): Drawing
+  createCodeFile(
+    fileId: ID!
+    version: Int!
+    userId: String!
+    content: String!
+  ): CodeFile
+}
+
+type Query {
+  getDrawing(drawingId: ID!): Drawing
+  getCodeFile(fileId: ID!, version: Int!): CodeFile
+}
+
+type Subscription {
+  onDrawingUpdated(drawingId: ID!): Drawing
+    @aws_subscribe(mutations: ["updateDrawing"])
+  onCodeFileUpdated(fileId: ID!): CodeFile
+    @aws_subscribe(mutations: ["createCodeFile"])
+}
